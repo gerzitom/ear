@@ -1,0 +1,18 @@
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (41, '2020-12-30', 'Task desc', 'Next task for project', 'IN_PROGRESS', null, 1, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (40, '2020-12-31', 'Task desc', 'New task for project', 'DONE', null, 1, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (82, null, '', 'New task', 'IN_PROGRESS', null, 5, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (85, null, '', 'Next task', 'DONE', null, 5, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (100, '2021-01-05', 'Create JPA models for whole project', 'JPA models', 'IN_PROGRESS', null, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (110, null, '', 'Services', 'IN_PROGRESS', null, 12, null, 127);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (102, null, '', 'Project model', 'IN_PROGRESS', 100, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (103, null, '', 'Task model', 'IN_PROGRESS', 100, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (104, null, '', 'User model', 'IN_PROGRESS', 100, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (105, null, '', 'DAOs', 'IN_PROGRESS', null, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (107, null, '', 'Project DAO', 'IN_PROGRESS', 105, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (108, null, '', 'Task DAO', 'IN_PROGRESS', 105, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (109, null, '', 'User DAO', 'IN_PROGRESS', 105, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (120, null, '', 'Task User relation', 'IN_PROGRESS', 103, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (121, null, '', 'Project User relation', 'IN_PROGRESS', 102, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (122, '2021-01-04', '', 'Task service', 'IN_PROGRESS', 110, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (123, '2021-01-05', '', 'Project services', 'IN_PROGRESS', 110, 12, null, null);
+INSERT INTO public.task (id, deadline, description, name, state, parent_task_id, project_id, responsible_user_id, sprint_id) VALUES (125, '2021-01-12', '', 'Some done task', 'DONE', null, 12, null, null);

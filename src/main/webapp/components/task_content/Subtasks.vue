@@ -6,7 +6,7 @@
     >
       <v-col>
         <h3 class="headline">
-          Podúkoly
+          Subtasks
         </h3>
       </v-col>
       <v-col
@@ -26,7 +26,7 @@
               text
               v-on="on"
             >
-              Přidat nový podúkol
+              Add new subtask
             </v-btn>
           </template>
           <new-task
@@ -38,8 +38,8 @@
       </v-col>
     </v-row>
     <v-list v-if="subtasks && subtasks.length > 0">
-      <v-list-item v-for="subtask in subtasks" :key="subtask.taskId">
-        <task small :data="subtask" @clicked="$emit('clicked')" />
+      <v-list-item v-for="subtask in subtasks" :key="subtask.id">
+        <subtask :data="subtask" v-on="$listeners" />
       </v-list-item>
     </v-list>
   </div>
@@ -50,7 +50,7 @@ export default {
   name: 'Subtasks',
   components: {
     newTask: () => import('~/components/dialogs/NewTask.vue'),
-    task: () => import('~/components/Task.vue')
+    subtask: () => import('~/components/Subtask')
   },
   props: {
     subtasks: {

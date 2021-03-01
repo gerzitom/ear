@@ -1,7 +1,7 @@
 <template>
   <v-card class="new-project">
     <v-card-title>
-      Nový task
+      New task
     </v-card-title>
     <v-card-text>
       <v-form
@@ -12,7 +12,7 @@
       >
         <v-container>
           <v-row>
-            <v-col md="9">
+            <v-col md="12">
               <v-text-field
                 v-model="name"
                 :error-messages="nameErrors"
@@ -21,15 +21,6 @@
                 required
                 @input="$v.name.$touch()"
                 @blur="$v.name.$touch()"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="priority"
-                outlined
-                hide-details
-                label="Priorita"
-                type="number"
               />
             </v-col>
           </v-row>
@@ -53,6 +44,19 @@
                   :min="datepickerMin"
                 />
               </v-menu>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-select
+                v-model="selectedValues"
+                :items="allUsers"
+                item-value="id"
+                item-text="name"
+                multiple
+                chips
+                @change="handleSelectChange"
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -105,6 +109,15 @@ export default {
       default: null
     }
   },
+  async fetch () {
+    const users = await this.$repositories.users.getAll()
+    for (const userId in users) {
+      const ID = parseInt(userId)
+      const user = users[ID]
+      this.allUsers.push(user)
+    }
+    this.selectedValues.push(this.$auth.user.id)
+  },
   data () {
     return {
       submiting: false,
@@ -115,7 +128,9 @@ export default {
       snackbarOpened: false,
       snackbarTimeout: 3000,
       deadline: null,
-      datepickerMin: this.$moment().format('YYYY-MM-DD')
+      datepickerMin: this.$moment().format('YYYY-MM-DD'),
+      allUsers: [],
+      selectedValues: []
     }
   },
   validations: {
@@ -131,6 +146,8 @@ export default {
     }
   },
   methods: {
+    handleSelectChange (newValues) {
+    },
     formSubmit (ev) {
       this.nameUnique = true
       ev.preventDefault()
@@ -139,19 +156,21 @@ export default {
         this.submiting = true
         const data = {
           name: this.name,
-          priority: this.priority,
+          state: 'IN_PROGRESS',
           description: this.description,
-          project_id: this.$route.params.id,
+          projectId: this.$route.params.id,
           deadline: this.deadline
         }
         if (this.parentTask) {
-          this.$axios.post(`/subtask/${this.parentTask}`, data)
+          this.$repositories.tasks.saveSubtask(this.parentTask, data)
             .then((result) => {
-              data.taskId = result.data
+              data.id = result
+              data.subtasks = []
               this.submiting = false
               this.snackbarOpened = true
               this.$emit('success', data)
-              this.$v.reset()
+              this.$nextTick(() => { this.$v.$reset() })
+              this.clearForm()
             })
             .catch((reason) => {
               this.submiting = false
@@ -159,13 +178,16 @@ export default {
               this.$v.$touch()
             })
         } else {
-          this.$axios.post('/tasks', data)
-            .then((result) => {
-              data.taskId = result.data
+          this.$repositories.tasks.save(data)
+            .then((taskId) => {
+              data.id = taskId
+              data.subtasks = []
+              this.addUsers(this.selectedValues, taskId)
               this.submiting = false
               this.snackbarOpened = true
               this.$emit('success', data)
-              this.$v.reset()
+              this.$nextTick(() => { this.$v.$reset() })
+              this.clearForm()
             })
             .catch((reason) => {
               this.submiting = false
@@ -174,6 +196,20 @@ export default {
             })
         }
       }
+    },
+    async addUsers (users, taskId) {
+      for (const userId of users) {
+        const dto = {
+          taskId,
+          userId
+        }
+        await this.$repositories.tasks.addUser(dto)
+      }
+    },
+    clearForm () {
+      this.name = ''
+      this.description = ''
+      this.deadline = null
     }
   }
 }

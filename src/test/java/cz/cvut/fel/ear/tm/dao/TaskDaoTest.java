@@ -3,6 +3,7 @@ package cz.cvut.fel.ear.tm.dao;
 import cz.cvut.fel.ear.tm.TmApplication;
 import cz.cvut.fel.ear.tm.exception.PersistenceException;
 import cz.cvut.fel.ear.tm.model.Project;
+import cz.cvut.fel.ear.tm.model.State;
 import cz.cvut.fel.ear.tm.model.Task;
 import cz.cvut.fel.ear.tm.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,17 +131,6 @@ class TaskDaoTest {
     }
 
     @Test
-    public void findByUser_findsTaskByUser(){
-        final Task task = generateTask();
-        User user = generateUser();
-        task.addUser(user);
-        em.persistAndFlush(task);
-
-        List<Task> result = dao.findByUser(user);
-        assertTrue(result.contains(task));
-    }
-
-    @Test
     public void findByProject_findsTasksByProject(){
         final Task taskInProject = generateTask();
         final Task taskNotInProject = generateTask();
@@ -152,9 +142,23 @@ class TaskDaoTest {
 
         List<Task> foundTasks = dao.findByProject(project.getId());
         assertTrue(foundTasks.contains(taskInProject));
-        foundTasks.forEach(task -> {
-            Project taskProject = task.getProject();
-        });
+    }
 
+    @Test
+    public void findDoneTasks_findsTasksOfProjectWhenDone(){
+        Project project = generateProject();
+        Task doneTask = generateTask();
+        doneTask.setState(State.DONE);
+
+        Task inProgressTask = generateTask();
+        inProgressTask.setState(State.IN_PROGRESS);
+
+        project.addTask(doneTask);
+        project.addTask(inProgressTask);
+
+        projectDao.persist(project);
+
+        List<Task> projectTasks = dao.findDoneTasks(project.getId());
+        assertTrue(projectTasks.contains(doneTask));
     }
 }

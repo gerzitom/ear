@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -12,10 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@ToString
 @Schema(name = "Comment", description = "Comment assigned to task by user", oneOf = Comment.class)
 @NamedQueries({
-        @NamedQuery(name = "Comment.findByTask", query = "SELECT c from Comment c WHERE :task = c.task.id")
+        @NamedQuery(name = "Comment.findByTask", query = "SELECT c from Comment c WHERE :task = c.task.id ORDER BY c.created DESC")
 })
 public class Comment extends AbstractEntity{
 
@@ -28,4 +28,12 @@ public class Comment extends AbstractEntity{
 
     @ManyToOne
     private Task task;
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "text='" + text + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }

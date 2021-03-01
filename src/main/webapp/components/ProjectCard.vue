@@ -1,32 +1,32 @@
 <template>
-  <nuxt-link class="project-card" :to="{path: `/projects/${data.projectId}`}">
+  <nuxt-link class="project-card" :to="{path: `/project/${data.id}`}">
     <v-card
       :raised="hovered"
+      class="px-3 pt-3"
       @mouseover="hovered = true"
       @mouseout="hovered = false"
     >
-      <v-row v-if="data">
+      <v-row
+        v-if="data"
+        justify="space-between"
+      >
         <v-col
-          md="9"
+          md="8"
+          class="ml-2"
         >
-          <v-card-title class="project-card__title">
+          <v-card-title class="project-card__title pa-0">
             {{ data.name }}
           </v-card-title>
         </v-col>
-        <v-col
-          md="3"
-        >
-          <v-btn
-            icon
-          >
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
+      </v-row>
+      <v-row>
+        <v-col>
+          <project-users :users="data.users" :add-button="false" />
         </v-col>
       </v-row>
       <v-card-subtitle class="project-card__status">
-        {{ data.state.name }}
+        <!--        {{ data.state.name }}-->
       </v-card-subtitle>
-      <v-progress-linear :value="countProgressState" />
     </v-card>
   </nuxt-link>
 </template>
@@ -34,6 +34,9 @@
 <script>
 export default {
   name: 'ProjectCard',
+  components: {
+    ProjectUsers: () => import('@/components/project/ProjectUsers')
+  },
   props: {
     data: {
       type: Object,
@@ -43,22 +46,17 @@ export default {
   data () {
     return {
       progress: null,
-      progressState: 0,
       hovered: false
     }
   },
   computed: {
-    countProgressState () {
-      if (!this.progress) { return 0 }
-      if (this.progress.done === 0 && this.progress.inProgress === 0) { return 0 }
-      return (this.progress.done / (this.progress.inProgress + this.progress.done)) * 100
-    }
+    // countProgressState () {
+    //   if (!this.progress) { return 0 }
+    //   if (this.progress.done === 0 && this.progress.inProgress === 0) { return 0 }
+    //   return (this.progress.done / (this.progress.inProgress + this.progress.done)) * 100
+    // }
   },
   created () {
-    this.$axios.get('/projects/' + this.data.projectId + '/progress')
-      .then((response) => {
-        this.progress = response.data
-      })
   }
 }
 </script>

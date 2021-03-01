@@ -15,15 +15,17 @@ export const scripts = {
         if (state.stateId === stateId) { foundState = state }
       })
       return foundState
+    },
+    /**
+     * Gets image path and parse it to full url
+     * @param imagePath
+     * @returns {string|null} image url or null
+     */
+    parseImagePath (imagePath) {
+      return imagePath !== null ? this.$const.BACKEND_BASE_URL + imagePath : null
     }
   },
   mounted () {
-    // if (!localStorage.getItem('states')) {
-    //   this.$axios.get('/states')
-    //     .then((response) => {
-    //       localStorage.setItem('states', JSON.stringify(response.data))
-    //     })
-    // }
   }
 }
 Vue.mixin(scripts)

@@ -1,0 +1,12 @@
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (74, null, 41, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (80, null, 41, 35);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (83, null, 82, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (86, null, 85, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (89, null, 82, 35);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (101, null, 100, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (106, null, 105, 35);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (111, null, 110, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (124, null, 123, 35);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (126, null, 125, 35);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (129, null, 107, 39);
+INSERT INTO public.task_user (id, created, task_id, user_id) VALUES (132, null, 122, 39);

@@ -1,25 +1,45 @@
 package cz.cvut.fel.ear.tm.model;
 
+import cz.cvut.fel.ear.tm.exception.ValidationException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
 @Schema(name = "Tracked time", description = "Time tracked to task", oneOf = TrackedTime.class)
-public class TrackedTime extends AbstractEntity{
+@NamedQueries({
+        @NamedQuery(name = "TrackedTime.findActiveTrackedTimeByUser", query = "SELECT t from TrackedTime t WHERE :user = t.user.id AND t.timeEnd is NULL"),
+        @NamedQuery(name = "TrackedTime.getTaskTrackedTimes", query = "SELECT t from TrackedTime t WHERE :task = t.task.id AND t.timeStart IS NOT NULL AND t.timeEnd IS NOT NULL")
+})
+public class TrackedTime{
 
-    private LocalDateTime start;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private LocalDateTime timeStart;
+    private LocalDateTime timeEnd;
+    private String description;
 
-    private LocalDateTime end;
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Task task;
+
+    /**
+     * Gets elapsed seconds of tracked time
+     * @return elapsed seconds of tracked time
+     */
+    public Long getElapsedTime(){
+        if(this.timeStart == null || this.timeEnd == null) throw new ValidationException("Times are not set.");
+        return this.timeStart.until(this.timeEnd, ChronoUnit.SECONDS);
+    }
 }

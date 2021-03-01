@@ -44,9 +44,10 @@ export default {
         name: this.name,
         deadline: this.datePicker
       }
-      this.$axios.post('/projects', data)
+      this.$repositories.projects.create(data)
         .then((response) => {
-          data.projectId = response.data
+          data.id = response.data
+          data.users = [this.$auth.user.id]
           this.$emit('newproject', data)
         })
       return null

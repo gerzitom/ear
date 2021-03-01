@@ -1,0 +1,4 @@
+INSERT INTO public.ear_user (dtype, id, name, password, removed, role, username, avatar_id) VALUES ('User', 69, 'Admin', '$2a$10$dWyTWEanyG6WANrnqCUW9.WuFXoWb5Gvlmzrse9QALJcnmsQuDQaO', false, 'ADMIN', 'admin', null);
+INSERT INTO public.ear_user (dtype, id, name, password, removed, role, username, avatar_id) VALUES ('User', 64, 'HAASD', '$2a$10$viDpd5pi45LPcDs/44kwbOlOIYzCIHWcJ0j0XSyqK9nOM4rqIViHG', false, 'USER', 'gerzitomG', null);
+INSERT INTO public.ear_user (dtype, id, name, password, removed, role, username, avatar_id) VALUES ('User', 39, 'Tom', '$2a$10$D6B.J0HnbxPdnYNReqSkjeRW32QXzBosRlnESOeqV5G2qtP4H.raq', false, 'USER', 'gerzitom', null);
+INSERT INTO public.ear_user (dtype, id, name, password, removed, role, username, avatar_id) VALUES ('User', 35, 'Martin Hubal', '$2a$10$Yy4V5TiDP81x7NgDxJ6VM.iQiyd56rUjPAk0ahBCZ9wehBTFcdzQi', true, 'USER', 'hubalmara', null);

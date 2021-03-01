@@ -15,19 +15,38 @@
               <v-text-field
                 v-model="login.username"
                 label="Username"
+                :error="error.username"
               />
               <v-text-field
                 v-model="login.password"
+                :error="error.password"
                 label="Password"
                 type="password"
               />
               <v-btn
                 type="submit"
-                class="primary login-button"
+                class="primary login-button mt-10"
+                :loading="loading"
               >
                 Log in
               </v-btn>
+              <v-btn
+                class="mt-5"
+                width="100%"
+                to="/register"
+              >
+                Register
+              </v-btn>
             </v-form>
+            <v-alert
+              v-if="alertText"
+              class="mt-5 text-center"
+              color="red"
+              dense
+              type="error"
+              outlined
+              v-text="alertText"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -42,17 +61,27 @@ export default {
       login: {
         username: '',
         password: ''
-      }
+      },
+      error: {
+        username: false,
+        password: false
+      },
+      loading: false,
+      alertText: ''
     }
   },
   methods: {
-    async userLogin () {
-      try {
-        const response = await this.$auth.loginWith('local', { data: this.login })
-        console.log(response)
-      } catch (err) {
-        console.log(err)
-      }
+    userLogin () {
+      this.loading = true
+      this.$auth.loginWith('local', { data: this.login })
+        .catch((error) => {
+          this.alertText = error.response.data.message
+          this.error.username = true
+          this.error.password = true
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

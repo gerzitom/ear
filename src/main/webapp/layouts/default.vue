@@ -52,15 +52,31 @@
       <v-spacer />
       <user-avatar />
     </v-app-bar>
-    <v-content>
+    <v-main>
       <nuxt />
-    </v-content>
+    </v-main>
     <v-footer
       :fixed="fixed"
       app
     >
       <span>&copy; {{ new Date().getFullYear() }}</span>
+      <v-spacer />
+      <a :href="$const.BASE_URL + '/swagger-ui.html'">REST API documentation</a>
     </v-footer>
+    <v-snackbar
+      v-model="noConnection"
+      :timeout="-1"
+      color="error"
+    >
+      <v-icon>mdi-error</v-icon>
+      No backend connection
+    </v-snackbar>
+    <v-snackbar
+      v-model="appError"
+      color="error"
+    >
+      {{ appErrorMessage }}
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -89,8 +105,22 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Task manager'
+      title: 'Task manager',
+      noConnection: false,
+      noConnectionMessage: '',
+      appError: false,
+      appErrorMessage: ''
     }
+  },
+  created () {
+    this.$nuxt.$on('error', (error) => {
+      this.noConnection = true
+      this.noConnectionMessage = error.response.data.message
+    })
+    this.$nuxt.$on('app_error', (error) => {
+      this.appError = true
+      this.appErrorMessage = error.response.data.message
+    })
   }
 }
 </script>

@@ -1,5 +1,10 @@
 package cz.cvut.fel.ear.tm.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import cz.cvut.fel.ear.tm.model.relations.TaskUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
@@ -9,8 +14,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,11 +25,10 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Schema(name = "Task", description = "Task", oneOf = Task.class)
 @NamedQueries({
         @NamedQuery(name = "Task.findByProject", query = "SELECT t from Task t WHERE :project = t.project.id"),
-        @NamedQuery(name = "Task.findByUser", query = "SELECT t from Task t WHERE :user MEMBER OF t.users")
+        @NamedQuery(name = "Task.findByProjectAndState", query = "SELECT t from Task t WHERE :project = t.project.id AND t.state = :state"),
 })
 public class Task extends AbstractEntity{
 
@@ -31,56 +36,56 @@ public class Task extends AbstractEntity{
 
     private String description;
 
-    private Date deadline;
+    private LocalDate deadline;
+
+    @Enumerated(EnumType.STRING)
+    private State state = State.IN_PROGRESS;
 
     @ManyToOne(
-            cascade = CascadeType.PERSIST
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @OneToOne
-    @ToString.Exclude
-    private User responsibleUser;
-
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @ToString.Exclude
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<User> users = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @ToString.Exclude
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Task> subtasks;
+    private List<TaskUser> taskUsers = new ArrayList<>();
 
     @ManyToOne
-    @ToString.Exclude
+    @JoinColumn(name = "sprint_id")
+    private Sprint sprint;
+
+    @ManyToOne
+    private User responsibleUser;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentTask")
     @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Task> subtasks = new ArrayList<>();
+
+    @ManyToOne
     private Task parentTask;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "task")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Comment> comments;
+    @OrderBy("created DESC")
+    private List<Comment> comments = new ArrayList<>();
 
-    public Task(String name, String description, Date deadline, User responsibleUser) {
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private List<TrackedTime> trackedTimes;
+
+    public Task(String name, String description, LocalDate deadline, User responsibleUser) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
         this.responsibleUser = responsibleUser;
     }
 
-    public void addComment(Comment comment){
-        this.comments.add(comment);
-    }
+    public void addComment(Comment comment){ this.comments.add(comment); }
 
-    public void addUser(User user){
-        this.users.add(user);
+    public void addSubtask(Task subtask){ this.subtasks.add(subtask); }
 
-    }
-    
-    public void addSubtask(Task subtask){
-        this.subtasks.add(subtask);
+    public Long getParentTaskId(){
+        return parentTask == null ? null : parentTask.getId();
     }
 
     @Override
@@ -94,5 +99,12 @@ public class Task extends AbstractEntity{
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

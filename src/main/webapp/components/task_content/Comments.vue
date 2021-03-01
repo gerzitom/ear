@@ -5,15 +5,16 @@
         Komentáře
       </h3>
       <v-form
-        class="mt-4"
+        class="mt-4 mb-10"
         onsubmit="return false"
         @submit="newComment"
       >
         <v-textarea
           v-model="commentText"
-          outlined
+          :auto-grow="true"
+          rows="1"
           required
-          label="Komentář"
+          label="Comment"
           :error-messages="nameErrors"
           @input="$v.commentText.$touch()"
           @keydown="handleShortcut"
@@ -22,26 +23,41 @@
           type="submit"
           small
         >
-          Odeslat
+          Send
         </v-btn>
       </v-form>
-      <v-list v-if="!comments && comments.length > 0">
-        <v-skeleton-loader type="list-item-avatar" />
-        <v-skeleton-loader max-width="80%" type="list-item-avatar" />
-        <v-skeleton-loader max-width="90%" type="list-item-avatar" />
+      <v-list v-if="!loading">
+        <p v-if="comments.length === 0">
+          There are no comments yet
+        </p>
+        <div v-for="comment in comments" v-else :key="comment.id">
+          <div class="d-flex pb-5">
+            <avatar :user-id="comment.userId" />
+            <div class="pl-3 flex-grow-1">
+              <p class="my-0">
+                {{ getUser(comment.userId).name }}
+              </p>
+              <p class="overline my-0">
+                {{ formatTime(comment.created) }}
+              </p>
+              <p class="mt-3 mb-3">
+                {{ comment.text }}
+              </p>
+              <v-divider />
+            </div>
+          </div>
+        </div>
       </v-list>
-      <v-list>
-        <v-list-item v-for="comment in comments" :key="comment.comment_id">
+      <v-list v-else>
+        <v-list-item v-for="i in 4" :key="i">
           <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/women/75.jpg" />
+            <v-skeleton-loader type="avatar" />
           </v-list-item-avatar>
           <v-list-item-content>
             <p class="overline">
-              {{ comment.created.format("DD. MM. YYYY HH:mm") }}
+              <v-skeleton-loader type="text" max-width="10%" />
             </p>
-            <v-list-item-subtitle>
-              {{ comment.text }}
-            </v-list-item-subtitle>
+            <v-skeleton-loader type="paragraph" max-width="80%" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -56,20 +72,32 @@ import {
 } from 'vuelidate/src/validators'
 export default {
   name: 'Comments',
+  components: {
+    Avatar: () => import('@/components/AvatarImage')
+  },
   mixins: [validationMixin],
   props: {
-    comments: {
-      type: Array,
-      default: null
-    },
     taskId: {
       type: Number,
       default: null
     }
   },
+  async fetch () {
+    this.users = await this.$repositories.users.getAll()
+    this.$repositories.tasks.getComments(this.taskId)
+      .then((response) => {
+        this.comments = response.data
+      })
+      .finally(() => {
+        this.loading = false
+      })
+  },
   data () {
     return {
-      commentText: null
+      commentText: null,
+      comments: [],
+      users: {},
+      loading: true
     }
   },
   validations: {
@@ -86,7 +114,7 @@ export default {
     }
   },
   created () {
-    this.sortComments()
+    this.$fetch()
   },
   methods: {
     handleShortcut (e) {
@@ -103,29 +131,27 @@ export default {
       this.$v.$touch()
       if (!this.$v.$invalid) {
         const data = {
-          taskId: this.taskId,
-          created: createdTime.format('YYYY-MM-DDThh:mm:ssZZ'),
-          userId: 1,
+          created: createdTime.format('YYYY-MM-DD hh:mm:ss'),
+          userId: this.$auth.user.id,
           text: this.commentText
         }
-        this.$axios.post('/comments', data)
+        this.$repositories.tasks.addComment(this.taskId, data)
           .then((result) => {
             data.created = createdTime
-            this.comments.push(data)
+            this.comments.unshift(data)
             this.commentText = ''
             this.$v.$reset()
-            this.sortComments()
+          })
+          .catch((err) => {
+            this.$nuxt.$emit('app_error', err)
           })
       }
     },
-    sortComments () {
-      this.comments.forEach((comment) => {
-        console.log(comment.created)
-        comment.created = this.$moment(comment.created)
-      })
-      this.comments.sort(function (a, b) {
-        return b.created - a.created
-      })
+    formatTime (rawTime) {
+      return this.$moment(rawTime).format('DD. MM. YYYY HH:mm')
+    },
+    getUser (userId) {
+      return this.users[userId]
     }
   }
 }

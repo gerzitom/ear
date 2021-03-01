@@ -31,8 +31,10 @@ export default {
   */
   plugins: [
     { src: '~/plugins/vuelidate' },
-    // { src: '~/plugins/Task' },
-    { src: '~/plugins/global' }
+    { src: '~/plugins/mindmap' },
+    { src: '~/plugins/global' },
+    { src: '~/plugins/repository' },
+    { src: '~/plugins/constants' }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -62,27 +64,26 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: '/userlogin', method: 'post', propertyName: 'token' },
-          logout: { url: '/userlogout', method: 'post' },
-          user: { url: '/user', method: 'get', propertyName: '' }
+          login: { url: '/users/login', method: 'post', propertyName: 'token' },
+          logout: { url: '/users/logout', method: 'post' },
+          user: { url: '/users/authenticateduser', method: 'get', propertyName: '' }
         },
         tokenRequired: true,
-        tokenType: ''
-        // tokenType: 'bearer',
+        tokenType: 'Bearer'
         // globalToken: true,
         // autoFetchUser: true
       }
-    },
-    redirect: {
-      logout: '/login'
     }
+    // redirect: {
+    //   logout: '/login'
+    // }
   },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: 'http://localhost:4567/'
+    baseURL: 'http://localhost:8080/rest'
   },
   /*
   ** vuetify module configuration

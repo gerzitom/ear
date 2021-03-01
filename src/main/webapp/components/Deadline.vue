@@ -66,7 +66,6 @@ export default {
   methods: {
     datepicker () {
       if (this.isostring != null) {
-        console.log('DAtepicker')
         this.validDeadline = true
         const moment = this.$moment(this.isostring)
         return moment.format('YYYY-MM-DD')

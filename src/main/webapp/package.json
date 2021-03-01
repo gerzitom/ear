@@ -20,13 +20,17 @@
     "@nuxtjs/axios": "^5.11.0",
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/pwa": "^3.0.0-0",
+    "diacritic": "0.0.2",
+    "mind-elixir": "^0.12.1",
     "nuxt": "^2.0.0",
     "vue-awesome-countdown": "^1.0.26",
+    "vue-mindmap": "0.0.4",
     "vuelidate": "^0.7.5",
     "vuetify": "^2.3.0"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.0",
+    "@nuxt/types": "^2.14.7",
     "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.0.0",
     "@nuxtjs/vuetify": "^1.11.2",

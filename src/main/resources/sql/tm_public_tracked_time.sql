@@ -1,0 +1,9 @@
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (112, null, '2021-01-02 22:13:31.000000', '2021-01-02 22:04:48.000000', 110, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (113, null, '2021-01-02 22:33:51.000000', '2021-01-02 22:32:26.000000', 110, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (114, null, '2021-01-02 22:35:13.000000', '2021-01-02 22:33:58.000000', 110, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (115, null, '2021-01-02 22:50:14.000000', '2021-01-02 22:39:19.000000', 110, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (116, null, '2020-12-22 01:35:58.000000', '2021-01-02 22:51:33.000000', 110, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (117, null, '2020-12-22 01:35:58.000000', '2021-01-02 23:21:33.000000', 105, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (118, null, '2020-12-22 01:35:58.000000', '2021-01-02 23:23:10.000000', 100, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (119, null, '2021-01-02 23:58:47.000000', '2021-01-02 23:35:01.000000', 105, 39);
+INSERT INTO public.tracked_time (id, description, time_end, time_start, task_id, user_id) VALUES (128, null, '2021-01-03 16:25:14.000000', '2021-01-03 16:24:03.000000', 107, 39);

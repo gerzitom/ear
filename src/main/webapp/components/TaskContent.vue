@@ -1,22 +1,21 @@
 <template>
   <div class="task-content">
-    <v-row>
+    <v-row v-if="data">
       <v-col
         cols="8"
       >
         <div class="task-content__main pa-10">
           <h3 class="display-1 font-weight-bold mb-2">
             <task-button
-              :completed="data.state_id === 2"
-              @uncompleted="$emit('uncompleted', data.taskId)"
-              @completed="$emit('completed', data.taskId)"
+              @uncompleted="$emit('uncompleted', data.id)"
+              @completed="$emit('completed', data.id)"
             />
             <span>{{ data.name }}</span>
           </h3>
           <v-row>
             <v-col>
               <p class="caption mb-1">
-                Úkol #{{ data.taskId }}
+                Úkol #{{ data.id }}
               </p>
             </v-col>
             <v-col
@@ -26,7 +25,7 @@
                 text
                 small
                 color="error"
-                @click="$emit('delete', data.taskId)"
+                @click="$emit('delete', data.id)"
               >
                 Odstranit
               </v-btn>
@@ -41,13 +40,12 @@
           </p>
           <v-divider class="my-5" />
           <subtasks
-            :subtasks="subtasks"
+            :subtasks="data.subtasks"
             @success="handleNewSubtask"
           />
           <v-divider class="my-5" />
           <comments
-            :task-id="data.taskId"
-            :comments="data.comments"
+            :task-id="data.id"
           />
         </div>
       </v-col>
@@ -65,10 +63,10 @@
           Stav
         </h4>
         <p class="overline">
-          {{ data.state.name }}
+          {{ data.state }}
         </p>
         <timer
-          :task-id="data.taskId"
+          :task-id="data.id"
         />
       </v-col>
     </v-row>
@@ -87,27 +85,30 @@ export default {
     taskButton: () => import('~/components/TaskButton.vue')
   },
   props: {
-    data: {
-      type: Object,
+    taskId: {
+      type: Number,
       default: null
     }
   },
+  fetch () {
+    this.$repositories.tasks.get(this.taskId)
+      .then((response) => {
+        this.data = response.data
+      })
+  },
   data () {
     return {
-      comments: null,
-      subtasks: null,
-      newTaskDialogOpened: false
+      newTaskDialogOpened: false,
+      data: null
     }
   },
-  created () {
-    this.$axios.get('tasks/' + this.data.taskId + '/comments')
-      .then((response) => {
-        this.comments = response.data.data
-      })
-    this.$axios.get('tasks/' + this.data.taskId + '/subtasks')
-      .then((response) => {
-        this.subtasks = response.data
-      })
+  watch: {
+    taskId (val) {
+      this.$fetch()
+    }
+  },
+  mounted () {
+    this.$fetch()
   },
   methods: {
     handleDeadlineUpdate (newDeadline) {
@@ -115,9 +116,9 @@ export default {
       const data = {
         deadline: newDeadline
       }
-      this.$axios.put(`/tasks/${this.data.taskId}`, data).then((result) => {
-        console.log(result)
-      })
+      this.$repositories.tasks.update(data, this.data.id)
+        .then((result) => {
+        })
     },
     handleNewSubtask (subtask) {
       this.newTaskDialogOpened = false

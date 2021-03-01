@@ -1,9 +1,17 @@
 package cz.cvut.fel.ear.tm.environment;
 
+import cz.cvut.fel.ear.tm.dto.comment.CommentDto;
+import cz.cvut.fel.ear.tm.dto.project.ProjectDto;
+import cz.cvut.fel.ear.tm.dto.trackedtime.TrackedTimeDto;
 import cz.cvut.fel.ear.tm.model.Project;
 import cz.cvut.fel.ear.tm.model.Task;
+import cz.cvut.fel.ear.tm.model.TrackedTime;
 import cz.cvut.fel.ear.tm.model.User;
+import cz.cvut.fel.ear.tm.service.UserService;
+import cz.cvut.fel.ear.tm.util.JwtUtil;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class Generator {
@@ -37,5 +45,28 @@ public class Generator {
         Project project = new Project();
         project.setName("Project " + randomInt());
         return project;
+    }
+
+    public static ProjectDto generateProjectDto(){
+        ProjectDto projectDto = new ProjectDto();
+        projectDto.setName("Project " + randomInt());
+        return projectDto;
+    }
+
+    public static CommentDto generateCommentDto(){
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("Comment " + randomInt());
+        return commentDto;
+    }
+
+    public static TrackedTimeDto generateTrackedTimeDto(){
+        TrackedTimeDto trackedTimeDto = new TrackedTimeDto();
+        trackedTimeDto.setStartTime(LocalDateTime.now());
+        return trackedTimeDto;
+    }
+
+    public static String generateRawAuthenticationToken(UserDetails userDetails){
+        JwtUtil util = new JwtUtil();
+        return "Bearer " + util.generateToken(userDetails);
     }
 }
